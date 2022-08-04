@@ -1,12 +1,20 @@
 import { motion } from 'framer-motion'
+import { useContext } from 'react';
 import { ButtonToggle } from './ButtonToggle';
+import { NoteContext } from './context/NoteContext';
 
 const containerVariants = {
     initial: {
-        borderRadius: "20px"
+        scale: 0, 
     },
     animate: {
-        borderRadius: "20px"
+         scale: 1
+        ,
+        transition:{
+            type: "spring",
+            stiffness: 260,
+            damping: 20
+          }
     },
     hover: {
         y: -10
@@ -43,6 +51,12 @@ const dateMotion = {
 
 
 export const NoteItem = (props) => {
+    const {setExpanded,isAnimatingOut,setAnimatingOut} = useContext(NoteContext)
+    const expand=(e)=>{
+         if (e.target.id ==='input' || e.target.id === 'btn') setExpanded(undefined) 
+         if( e.target.id ==='bodyCard') setExpanded(props.index);
+    }
+
     let zIndex = 10;
     if (props.isanimatingout) {
         zIndex = 40;
@@ -51,15 +65,11 @@ export const NoteItem = (props) => {
         <>
 
             <motion.div
-              
                 style={{ zIndex: zIndex }}
-                onClick={(e) => {
-
-                    (e.target instanceof HTMLInputElement) ? props.setexpanded(undefined) : props.setexpanded(props.index);
-                }}
-                onLayoutAnimationComplete={() => {
+                onClick={expand}
+                onLayoutAnimationComplete={() => {  
                     if (props.isanimatingout) {
-                        props.setanimatingout(false);
+                        setAnimatingOut(false);
                     }
                 }}
                 layoutId={`Container${props.projectobj.id}`}
@@ -69,7 +79,7 @@ export const NoteItem = (props) => {
                 whileHover="hover"
 
             >
-                <motion.div    className='contentItem 'layoutId={`BackgroundContainer${props.projectobj.id}`}>
+                <motion.div   id='bodyCard' className='contentItem 'layoutId={`BackgroundContainer${props.projectobj.id}`}>
 
 
 
@@ -83,10 +93,9 @@ export const NoteItem = (props) => {
                         {props.projectobj.Date}
                     </motion.span>
                     <motion.div
-                        layoutId={`butom${props.projectobj.id}`}
                         variants={dateMotion}
                     >
-                        <ButtonToggle onDeleteNote={props.ondeleteNote} note={props.projectobj.id} ></ButtonToggle>
+                        <ButtonToggle props={props} ></ButtonToggle>
                     </motion.div>
                 </motion.div>
             </motion.div>

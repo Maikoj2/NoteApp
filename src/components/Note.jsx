@@ -1,10 +1,9 @@
-import { FaTimes, FaPlus } from 'react-icons/fa';
+import { FaTimes, FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import { motion } from 'framer-motion'
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { NoteContext } from './context/NoteContext';
 
-const today = new Date();
 export const Note = (props) => {
-   const [NoteData, setNoteData ] = useState(props.projectobj)
 
     const detailsVariants = {
         initial: {
@@ -40,15 +39,15 @@ export const Note = (props) => {
             backgroundColor: "rgba(255, 255, 255, 0)"
         }
     };
-
-    const handelSaveOrDelete = (event) => {
+    const { haldleDeleteNote, haldleUpdate, setExpanded, setAnimatingOut } = useContext(NoteContext)
+    const handelSaveOrDelete = () => {
         const textarea = document.getElementsByTagName('textarea');
-        if (textarea.textarea.value === "") {
-            props.ondeleteNote( NoteData.id)
-        }else{
-            props.onupdateNote(NoteData.id, textarea.textarea.value)
-           
-        }
+        (textarea.textarea.value === "") ?
+            haldleDeleteNote(props.projectobj.id) :
+            haldleUpdate(props.projectobj.id, textarea.textarea.value)
+    }
+    const deleted =()=>{
+        haldleDeleteNote(props.projectobj.id)
     }
 
 
@@ -57,8 +56,8 @@ export const Note = (props) => {
             <motion.div
                 id="expandedProjectCard"
                 onClick={() => {
-                    props.setexpanded(undefined);
-                    props.setanimatingout(props.index);
+                    setExpanded(undefined);
+                    setAnimatingOut(props.index);
                     handelSaveOrDelete()
                 }}
                 initial="initial"
@@ -85,13 +84,13 @@ export const Note = (props) => {
                             <motion.a
                                 layoutId={`head${props.projectobj.id}`}
                                 onClick={() => {
-                                    props.setexpanded(undefined);
-                                    props.setanimatingout(props.index);
+                                    setExpanded(undefined);
+                                    setAnimatingOut(props.index);
                                 }}>
                                 <FaTimes onClick={handelSaveOrDelete}></FaTimes>
                             </motion.a>
                             <motion.a layoutId={`butom${props.projectobj.id}`}>
-                                <FaPlus></FaPlus>
+                                <FaRegTrashAlt onClick={deleted} ></FaRegTrashAlt>
                             </motion.a>
                         </motion.div>
 
@@ -104,7 +103,7 @@ export const Note = (props) => {
                             layoutId={`message${props.projectobj.id}`}
                             className="form__group field">
                             <textarea name="textarea" className="textarea" placeholder="Your note here..." cols="40" rows="10" minLength="10"
-                                maxLength="500" defaultValue={ NoteData.Message}></textarea>
+                                maxLength="500" defaultValue={props.projectobj.Message}></textarea>
                         </motion.div>
 
                     </motion.div>
