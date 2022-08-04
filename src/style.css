@@ -40,8 +40,8 @@ body{
     top: 0;
     flex-direction: column;
     padding: 0;
-    border-top-right-radius: var(--cs) ;
-    border-top-left-radius: var(--cs) ;
+    border-top-right-radius: 15px  ;
+    border-top-left-radius:  15px;
     background-color: #fdfeff;
 }
 .headerIcon{
@@ -150,7 +150,7 @@ body{
     background-color: var(--custom-color);
     border-top-left-radius: var(--br);
     border-top-right-radius: var(--br);
-    padding: 5px;
+    padding: 9px;
     width: 100%;
     display: flex;
     align-items: flex-end;
